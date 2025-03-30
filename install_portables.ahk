@@ -1,7 +1,10 @@
-#NoEnv
+; AHK Script to create shortcuts with selectable locations (Desktop, Start Menu\Portables, Taskbar Pinned)
+; Compatible with AutoHotkey v1
+
+#NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases
 #SingleInstance Force  ; Ensures only one instance runs at a time
-SendMode Input
-SetWorkingDir %A_ScriptDir%
+SendMode Input  ; Recommended for new scripts due to its superior speed and reliability
+SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory
 
 ; Check if an argument (EXE file path) is passed
 if 0 < 1
