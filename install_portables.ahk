@@ -33,8 +33,10 @@ SplitPath, exePath, exeName
 Gui, +OwnDialogs
 Gui, Add, Text, , (Select where to create shortcuts)
 Gui, Add, Checkbox, vCreateDesktop, Create Desktop Shortcut
-Gui, Add, Checkbox, vCreateStartMenu, Create Start Menu\Portables Shortcut
+Gui, Add, Checkbox, vCreateStartMenu, Create Start Menu Shortcut
 Gui, Add, Checkbox, vCreateTaskbar, Pin to Taskbar
+Gui, Add, Text,, Start Menu Folder Name (Optional):
+Gui, Add, Edit, vStartMenuFolder w200, Portables  ; Default value is "Portables"
 Gui, Add, Text,, Shortcut Name:
 Gui, Add, Edit, vShortcutName w200, %exeName%  ; Default width 200px
 Gui, Add, Button, x+10 w75 h23 Default, OK  ; Standard Windows button size, positioned to the right
@@ -60,10 +62,15 @@ if !CreateDesktop and !CreateStartMenu and !CreateTaskbar
 
 ; Define shortcut locations
 desktop := A_Desktop
-startMenu := A_StartMenu "\Portables"
 taskbar := A_AppData "\Microsoft\Internet Explorer\Quick Launch\User Pinned\TaskBar"
 
-; Ensure Start Menu "Portables" folder exists
+; Check if the user entered a Start Menu folder name
+if (StartMenuFolder != "")
+    startMenu := A_StartMenu "\" StartMenuFolder
+else
+    startMenu := A_StartMenu  ; Default to root Start Menu if empty
+
+; Ensure Start Menu folder exists
 IfNotExist, %startMenu%
     FileCreateDir, %startMenu%
 
