@@ -1,8 +1,0 @@
-Windows Registry Editor Version 5.00
-
-[HKEY_CLASSES_ROOT\exefile\shell\InstallPortableProgram]
-@="Install Portable program"
-"Icon"="shell32.dll,271"
-
-[HKEY_CLASSES_ROOT\exefile\shell\InstallPortableProgram\command]
-@="\"C:\\Path\\To\\Your\\Script\\CreateShortcutsWithTaskbarPinning.ahk\" \"%1\""
