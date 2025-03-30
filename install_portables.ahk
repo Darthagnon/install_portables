@@ -11,16 +11,16 @@ if 0 < 1
     ExitApp
 }
 
-; Get the first argument (EXE path)
-exePath := 1  ; No `%` needed
+; Retrieve the first argument
+exePath := %1%
 
 ; Remove surrounding quotes if present
-StringReplace, exePath, exePath, ", , All
+exePath := Trim(exePath, """")  ; Properly remove leading and trailing quotes
 
 ; Validate path
 if !FileExist(exePath)
 {
-    MsgBox, Invalid file path! Please provide a valid executable.
+    MsgBox, Invalid file path! (`%exePath%`) Please provide a valid executable.
     ExitApp
 }
 
@@ -73,13 +73,13 @@ CreateShortcut(linkPath, target)
 
 ; Create shortcuts
 if CreateDesktop
-    CreateShortcut(desktop "\" shortcutName ".lnk", exePath)
+    CreateShortcut(desktop "\" ShortcutName ".lnk", exePath)
 
 if CreateStartMenu
-    CreateShortcut(startMenu "\" shortcutName ".lnk", exePath)
+    CreateShortcut(startMenu "\" ShortcutName ".lnk", exePath)
 
 if CreateTaskbar
-    CreateShortcut(taskbar "\" shortcutName ".lnk", exePath)
+    CreateShortcut(taskbar "\" ShortcutName ".lnk", exePath)
 
 MsgBox, Shortcuts created successfully.
 ExitApp
