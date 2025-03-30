@@ -26,8 +26,16 @@ if !FileExist(exePath)
     ExitApp
 }
 
+; Get the full (long) path to avoid short 8.3 filenames
+Loop, %exePath%, 1
+{
+    exePath := A_LoopFileLongPath
+    break
+}
+
 ; Extract the filename without extension
 SplitPath, exePath, exeName
+exeName := RegExReplace(exeName, "\.exe$", "", "")  ; Remove ".exe" from the name
 
 ; Create GUI
 Gui, +OwnDialogs
@@ -38,7 +46,7 @@ Gui, Add, Checkbox, vCreateTaskbar, Pin to Taskbar
 Gui, Add, Text,, Start Menu Folder Name (Optional):
 Gui, Add, Edit, vStartMenuFolder w200, Portables  ; Default value is "Portables"
 Gui, Add, Text,, Shortcut Name:
-Gui, Add, Edit, vShortcutName w200, %exeName%  ; Default width 200px
+Gui, Add, Edit, vShortcutName w200, %exeName%  ; Use the cleaned-up executable name
 Gui, Add, Button, x+10 w75 h23 Default, OK  ; Standard Windows button size, positioned to the right
 Gui, Show,, Shortcut Options
 
