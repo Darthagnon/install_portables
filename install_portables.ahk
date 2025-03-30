@@ -4,20 +4,42 @@
 #NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases
 SendMode Input  ; Recommended for new scripts due to its superior speed and reliability
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory
-; GUI for user input
-; Set window icon to shell32.dll,127
+; Check if an argument (EXE file path) is passed
+if 0 < 1
+{
+    MsgBox, Please drag and drop an executable file onto this script.
+    ExitApp
+}
+
+; Get the first argument (EXE path)
+exePath := 1  ; No `%` needed
+
+; Remove surrounding quotes if present
+StringReplace, exePath, exePath, ", , All
+
+; Validate path
+if !FileExist(exePath)
+{
+    MsgBox, Invalid file path! Please provide a valid executable.
+    ExitApp
+}
+
+; Extract the filename without extension
+SplitPath, exePath, exeName
+
+; Create GUI
 Gui, +OwnDialogs
 Gui, Add, Text, , (Select where to create shortcuts)
 Gui, Add, Checkbox, vCreateDesktop, Create Desktop Shortcut
 Gui, Add, Checkbox, vCreateStartMenu, Create Start Menu\Portables Shortcut
 Gui, Add, Checkbox, vCreateTaskbar, Pin to Taskbar
 Gui, Add, Text,, Shortcut Name:
-Gui, Add, Edit, vShortcutName w200  ; Default width 200px
-Gui, Add, Button, x+10 w75 h23 Default, OK  ; Move to right, standard 75x23 size
+Gui, Add, Edit, vShortcutName w200, %exeName%  ; Default width 200px
+Gui, Add, Button, x+10 w75 h23 Default, OK  ; Standard Windows button size, positioned to the right
 Gui, Show,, Shortcut Options
 
 ; Wait for user interaction
-; Set GUI icon
+; Set GUI icon to shell32.dll,127
 hIcon := DllCall("LoadImage", "UInt", 0, "Str", "shell32.dll", "UInt", 1, "Int", 127, "Int", 127, "UInt", 0x10)
 SendMessage, 0x80, 1, hIcon, , A  ; WM_SETICON for big icon
 SendMessage, 0x80, 0, hIcon, , A  ; WM_SETICON for small icon
@@ -48,9 +70,6 @@ CreateShortcut(linkPath, target)
 {
     FileCreateShortcut, %target%, %linkPath%
 }
-
-; Set the correct target path
-exePath := "C:\path\to\program.exe"
 
 ; Create shortcuts
 if CreateDesktop
