@@ -13,8 +13,8 @@ if 0 < 1
     ExitApp
 }
 
-; Retrieve the first argument
-exePath := %1%
+; Retrieve the first argument **without using :=**
+exePath = %1%
 
 ; Remove surrounding quotes if present
 exePath := Trim(exePath, """")  ; Properly remove leading and trailing quotes
