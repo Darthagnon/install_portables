@@ -1,4 +1,4 @@
-; AHK Script to create shortcuts on Desktop and Start Menu\Portables folders
+; AHK Script to create shortcuts with selectable locations (Desktop, Start Menu\Portables, Taskbar Pinned)
 
 #NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases
 SendMode Input  ; Recommended for new scripts due to its superior speed and reliability
@@ -17,11 +17,26 @@ exePath := A_Args[1]
 ; Get the file name (without extension) to use as default shortcut name
 FileGetName, exeName, %exePath%
 
-; Prompt the user for a shortcut name, defaulting to the EXE name
-InputBox, shortcutName, Shortcut Name, Enter the name for the shortcut:, , 400, 150,, , , %exeName%
-if ErrorLevel
+; Create a GUI for user input (checkboxes and shortcut name)
+Gui, Add, Checkbox, vCreateDesktop, Create Desktop Shortcut
+Gui, Add, Checkbox, vCreateStartMenu, Create Start Menu\Portables Shortcut
+Gui, Add, Checkbox, vCreateTaskbar, Pin to Taskbar
+Gui, Add, Text,, Shortcut Name:
+Gui, Add, Edit, vShortcutName, %exeName%  ; Default value is the EXE name
+Gui, Add, Button, Default, OK
+Gui, Show,, Shortcut Options
+
+; Wait for user interaction
+Return
+
+; Handle the OK button press
+ButtonOK:
+Gui, Submit
+
+; If no locations are selected, warn the user and exit
+if (!CreateDesktop && !CreateStartMenu && !CreateTaskbar)
 {
-    MsgBox, Shortcut creation cancelled.
+    MsgBox, Please select at least one location for the shortcut.
     ExitApp
 }
 
@@ -36,15 +51,30 @@ IfNotExist, %startMenu%
 ; Function to create a shortcut
 CreateShortcut(linkPath, target, shortcutName)
 {
-    FileCreateShortcut, %target%, %linkPath%, , , , , , , , , , %shortcutName%
+    FileCreateShortcut, %target%, %linkPath%, , , , , , , , , %shortcutName%
 }
 
-; Create Desktop shortcut
-CreateShortcut(desktop "\" shortcutName ".lnk", exePath, shortcutName)
+; Create shortcuts based on user selections
+if (CreateDesktop)
+{
+    CreateShortcut(desktop "\" ShortcutName ".lnk", exePath, ShortcutName)
+}
 
-; Create Start Menu\Portables shortcut
-CreateShortcut(startMenu "\" shortcutName ".lnk", exePath, shortcutName)
+if (CreateStartMenu)
+{
+    CreateShortcut(startMenu "\" ShortcutName ".lnk", exePath, ShortcutName)
+}
+
+; Pin to Taskbar (only works on Windows 7 and later)
+if (CreateTaskbar)
+{
+    Run, % "explorer.exe /select," exePath
+    Sleep, 500
+    Send, {AppsKey}  ; Opens context menu
+    Sleep, 100
+    Send, p  ; Pin to taskbar
+}
 
 ; Notify user of success
-MsgBox, Shortcuts created on Desktop and Start Menu\Portables.
+MsgBox, Shortcuts created based on your selections.
 ExitApp
