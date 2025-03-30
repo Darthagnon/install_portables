@@ -37,11 +37,14 @@ Loop, %exePath%, 1
 SplitPath, exePath, exeName
 exeName := RegExReplace(exeName, "\.exe$", "", "")  ; Remove ".exe" from the name
 
+; Load icon from the EXE
+hIcon := DllCall("Shell32\ExtractIcon", "Ptr", 0, "Str", exePath, "Int", 0, "Ptr")
+
 ; Create GUI
 Gui, +OwnDialogs
-Gui, Add, Text, , (Select where to create shortcuts)
-Gui, Add, Checkbox, vCreateDesktop, Create Desktop Shortcut
-Gui, Add, Checkbox, vCreateStartMenu, Create Start Menu Shortcut
+Gui, Add, Text,, (Select where to create shortcuts)
+Gui, Add, Checkbox, vCreateDesktop Checked, Create Desktop Shortcut
+Gui, Add, Checkbox, vCreateStartMenu Checked, Create Start Menu Shortcut
 Gui, Add, Checkbox, vCreateTaskbar, Pin to Taskbar
 Gui, Add, Text,, Start Menu Folder Name (Optional):
 Gui, Add, Edit, vStartMenuFolder w200, Portables  ; Default value is "Portables"
@@ -51,10 +54,11 @@ Gui, Add, Button, x+10 w75 h23 Default, OK  ; Standard Windows button size, posi
 Gui, Show,, Shortcut Options
 
 ; Wait for user interaction
-; Set GUI icon to shell32.dll,127
-hIcon := DllCall("LoadImage", "UInt", 0, "Str", "shell32.dll", "UInt", 1, "Int", 127, "Int", 127, "UInt", 0x10)
-SendMessage, 0x80, 1, hIcon, , A  ; WM_SETICON for big icon
-SendMessage, 0x80, 0, hIcon, , A  ; WM_SETICON for small icon
+; Set the GUI icon to the EXE's icon
+if (hIcon) {
+    SendMessage, 0x80, 1, hIcon, , A  ; WM_SETICON big
+    SendMessage, 0x80, 0, hIcon, , A  ; WM_SETICON small
+}
 
 Return
 
@@ -83,8 +87,7 @@ IfNotExist, %startMenu%
     FileCreateDir, %startMenu%
 
 ; Function to create a shortcut
-CreateShortcut(linkPath, target)
-{
+CreateShortcut(linkPath, target) {
     FileCreateShortcut, %target%, %linkPath%
 }
 
