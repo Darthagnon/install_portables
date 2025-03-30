@@ -43,6 +43,7 @@ if (!CreateDesktop && !CreateStartMenu && !CreateTaskbar)
 ; Define locations for shortcuts
 desktop := A_Desktop
 startMenu := A_StartMenu "\Portables"
+taskbar := A_AppData "\Microsoft\Internet Explorer\Quick Launch\User Pinned\TaskBar"
 
 ; Ensure Start Menu "Portables" folder exists
 IfNotExist, %startMenu%
@@ -51,7 +52,7 @@ IfNotExist, %startMenu%
 ; Function to create a shortcut
 CreateShortcut(linkPath, target, shortcutName)
 {
-    FileCreateShortcut, %target%, %linkPath%, , , , , , , , , %shortcutName%
+    FileCreateShortcut, %target%, %linkPath%, , , , , , , , , , %shortcutName%
 }
 
 ; Create shortcuts based on user selections
@@ -65,14 +66,12 @@ if (CreateStartMenu)
     CreateShortcut(startMenu "\" ShortcutName ".lnk", exePath, ShortcutName)
 }
 
-; Pin to Taskbar (only works on Windows 7 and later)
+; Create Taskbar shortcut
 if (CreateTaskbar)
 {
-    Run, % "explorer.exe /select," exePath
-    Sleep, 500
-    Send, {AppsKey}  ; Opens context menu
-    Sleep, 100
-    Send, p  ; Pin to taskbar
+    ifNotExist, %taskbar%
+        FileCreateDir, %taskbar%
+    CreateShortcut(taskbar "\" ShortcutName ".lnk", exePath, ShortcutName)
 }
 
 ; Notify user of success
