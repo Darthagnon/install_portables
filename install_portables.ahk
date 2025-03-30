@@ -5,14 +5,14 @@
 SendMode Input  ; Recommended for new scripts due to its superior speed and reliability
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory
 
-; Check if an argument (EXE file path) is passed
+; Check if an argument (EXE file path) is passed (check number of arguments)
 if 0 = 0
 {
-    MsgBox, Please drag and drop an executable file onto this script.
+    MsgBox, Please run the script with an executable file as an argument or drag-and-drop it onto the script.
     ExitApp
 }
 
-; Store the passed EXE file path
+; Access the first passed argument (EXE file path)
 exePath := %1%
 
 ; Get the file name (without extension) to use as default shortcut name
@@ -47,7 +47,9 @@ taskbar := A_AppData "\Microsoft\Internet Explorer\Quick Launch\User Pinned\Task
 
 ; Ensure Start Menu "Portables" folder exists
 IfNotExist, %startMenu%
+{
     FileCreateDir, %startMenu%
+}
 
 ; Function to create a shortcut
 CreateShortcut(linkPath, target, shortcutName)
@@ -70,7 +72,9 @@ if CreateStartMenu
 if CreateTaskbar
 {
     IfNotExist, %taskbar%
+    {
         FileCreateDir, %taskbar%
+    }
     CreateShortcut(taskbar "\" ShortcutName ".lnk", exePath, ShortcutName)
 }
 
