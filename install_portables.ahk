@@ -9,7 +9,7 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory
 ; Check if an argument (EXE file path) is passed
 if 0 < 1
 {
-    MsgBox, Please drag and drop an executable file onto this script.
+    MsgBox Please drag and drop an executable file onto this script.
     ExitApp
 }
 
@@ -22,7 +22,7 @@ exePath := Trim(exePath, """")  ; Properly remove leading and trailing quotes
 ; Validate path
 if !FileExist(exePath)
 {
-    MsgBox, Invalid file path! (`%exePath%`) Please provide a valid executable.
+    MsgBox Invalid file path! (`exePath`) Please provide a valid executable.
     ExitApp
 }
 
@@ -54,7 +54,7 @@ Gui, Submit
 ; Ensure at least one option is selected
 if !CreateDesktop and !CreateStartMenu and !CreateTaskbar
 {
-    MsgBox, Please select at least one location for the shortcut.
+    MsgBox Please select at least one location for the shortcut.
     ExitApp
 }
 
@@ -83,5 +83,5 @@ if CreateStartMenu
 if CreateTaskbar
     CreateShortcut(taskbar "\" ShortcutName ".lnk", exePath)
 
-MsgBox, Shortcuts created successfully.
+MsgBox Shortcuts created successfully.
 ExitApp
