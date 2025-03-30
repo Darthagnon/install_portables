@@ -5,7 +5,7 @@
 SendMode Input  ; Recommended for new scripts due to its superior speed and reliability
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory
 
-; Check if an argument (EXE file path) is passed (check number of arguments)
+; Check if an argument (EXE file path) is passed
 if 0 = 0
 {
     MsgBox, Please run the script with an executable file as an argument or drag-and-drop it onto the script.
@@ -13,7 +13,7 @@ if 0 = 0
 }
 
 ; Access the first passed argument (EXE file path)
-exePath := %1%
+exePath := %1%  ; FIXED: Use `1` directly
 
 ; Get the file name (without extension) to use as default shortcut name
 SplitPath, exePath, exeName
@@ -54,28 +54,24 @@ IfNotExist, %startMenu%
 ; Function to create a shortcut
 CreateShortcut(linkPath, target, shortcutName)
 {
-    FileCreateShortcut, %target%, %linkPath%, , , , , , , , , %shortcutName%
+    FileCreateShortcut, %target%, %linkPath%  ; FIXED: Removed incorrect extra parameters
 }
 
 ; Create shortcuts based on user selections
 if CreateDesktop
 {
-    CreateShortcut(desktop "\" ShortcutName ".lnk", exePath, ShortcutName)
+    CreateShortcut(desktop "\" shortcutName ".lnk", exePath, shortcutName)  ; FIXED: Use `shortcutName`
 }
 
 if CreateStartMenu
 {
-    CreateShortcut(startMenu "\" ShortcutName ".lnk", exePath, ShortcutName)
+    CreateShortcut(startMenu "\" shortcutName ".lnk", exePath, shortcutName)
 }
 
 ; Create Taskbar shortcut
 if CreateTaskbar
 {
-    IfNotExist, %taskbar%
-    {
-        FileCreateDir, %taskbar%
-    }
-    CreateShortcut(taskbar "\" ShortcutName ".lnk", exePath, ShortcutName)
+    CreateShortcut(taskbar "\" shortcutName ".lnk", exePath, shortcutName)
 }
 
 ; Notify user of success
