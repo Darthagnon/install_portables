@@ -6,7 +6,7 @@ SendMode Input  ; Recommended for new scripts due to its superior speed and reli
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory
 
 ; Check if an argument (EXE file path) is passed
-if 0 < 1
+if 0 = 0
 {
     MsgBox, Please drag and drop an executable file onto this script.
     ExitApp
