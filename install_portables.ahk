@@ -6,19 +6,29 @@ SendMode Input  ; Recommended for new scripts due to its superior speed and reli
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory
 
 ; Check if an argument (EXE file path) is passed
-if 0 = 0
+if 0 < 1
 {
-    MsgBox, Please run the script with an executable file as an argument or drag-and-drop it onto the script.
+    MsgBox, Please drag and drop an executable file onto this script.
     ExitApp
 }
 
-; Access the first passed argument (EXE file path)
-exePath := %1%  ; FIXED: Use `1` directly
+; Access the first argument properly
+exePath := 1  ; No `%` needed
 
-; Get the file name (without extension) to use as default shortcut name
+; Remove surrounding quotes if present
+StringReplace, exePath, exePath, ", , All
+
+; Validate path
+if !FileExist(exePath)
+{
+    MsgBox, Invalid file path! Please provide a valid executable.
+    ExitApp
+}
+
+; Extract the filename without extension
 SplitPath, exePath, exeName
 
-; Create a GUI for user input (checkboxes and shortcut name)
+; GUI for user input
 Gui, Add, Checkbox, vCreateDesktop, Create Desktop Shortcut
 Gui, Add, Checkbox, vCreateStartMenu, Create Start Menu\Portables Shortcut
 Gui, Add, Checkbox, vCreateTaskbar, Pin to Taskbar
@@ -33,47 +43,37 @@ Return
 ButtonOK:
 Gui, Submit
 
-; If no locations are selected, warn the user and exit
+; Ensure at least one option is selected
 if !CreateDesktop and !CreateStartMenu and !CreateTaskbar
 {
     MsgBox, Please select at least one location for the shortcut.
     ExitApp
 }
 
-; Define locations for shortcuts
+; Define shortcut locations
 desktop := A_Desktop
 startMenu := A_StartMenu "\Portables"
 taskbar := A_AppData "\Microsoft\Internet Explorer\Quick Launch\User Pinned\TaskBar"
 
 ; Ensure Start Menu "Portables" folder exists
 IfNotExist, %startMenu%
-{
     FileCreateDir, %startMenu%
-}
 
 ; Function to create a shortcut
-CreateShortcut(linkPath, target, shortcutName)
+CreateShortcut(linkPath, target)
 {
-    FileCreateShortcut, %target%, %linkPath%  ; FIXED: Removed incorrect extra parameters
+    FileCreateShortcut, %target%, %linkPath%
 }
 
-; Create shortcuts based on user selections
+; Create shortcuts
 if CreateDesktop
-{
-    CreateShortcut(desktop "\" shortcutName ".lnk", exePath, shortcutName)  ; FIXED: Use `shortcutName`
-}
+    CreateShortcut(desktop "\" shortcutName ".lnk", exePath)
 
 if CreateStartMenu
-{
-    CreateShortcut(startMenu "\" shortcutName ".lnk", exePath, shortcutName)
-}
+    CreateShortcut(startMenu "\" shortcutName ".lnk", exePath)
 
-; Create Taskbar shortcut
 if CreateTaskbar
-{
-    CreateShortcut(taskbar "\" shortcutName ".lnk", exePath, shortcutName)
-}
+    CreateShortcut(taskbar "\" shortcutName ".lnk", exePath)
 
-; Notify user of success
-MsgBox, Shortcuts created based on your selections.
+MsgBox, Shortcuts created successfully.
 ExitApp
