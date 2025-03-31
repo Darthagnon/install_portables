@@ -1,27 +1,31 @@
 @echo off
 setlocal
 
-:: Get the current directory where the AHK script is located
+:: Get the full path of the icon and escape backslashes
 set "currentDir=%~dp0"
-
-:: Set the path for the AHK script (replace backslashes with double backslashes for the registry key)
+set "iconPath=%currentDir%install_portables.ico"
 set "ahkScriptPath=%currentDir%install_portables.exe"
+
+:: Escape backslashes for registry (.reg) file
+set "iconPath=%iconPath:\=\\%"
 set "ahkScriptPath=%ahkScriptPath:\=\\%"
 
 :: Create a temporary .reg file
-echo Windows Registry Editor Version 5.00 > AddToContextMenu.reg
-echo. >> AddToContextMenu.reg
-echo [HKEY_CLASSES_ROOT\exefile\shell\InstallPortableProgram] >> AddToContextMenu.reg
-echo @="Install Portable program" >> AddToContextMenu.reg
-echo "Icon"="shell32.dll,271" >> AddToContextMenu.reg
-echo. >> AddToContextMenu.reg
-echo [HKEY_CLASSES_ROOT\exefile\shell\InstallPortableProgram\command] >> AddToContextMenu.reg
-echo @="\"%ahkScriptPath%\" \"%%1\"" >> AddToContextMenu.reg
+> AddToContextMenu.reg (
+    echo Windows Registry Editor Version 5.00
+    echo.
+    echo [HKEY_CLASSES_ROOT\exefile\shell\InstallPortableProgram]
+    echo @="Install Portable program"
+    echo "Icon"="%iconPath%"
+    echo.
+    echo [HKEY_CLASSES_ROOT\exefile\shell\InstallPortableProgram\command]
+    echo @="\"%ahkScriptPath%\" \"%%1\""
+)
 
-:: Add the registry entries
+:: Add the registry entries silently
 regedit /s AddToContextMenu.reg
 
-:: Delete the temporary .reg file
+:: Clean up
 del AddToContextMenu.reg
 
 echo Context menu entry added successfully.
