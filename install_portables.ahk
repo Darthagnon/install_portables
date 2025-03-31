@@ -36,25 +36,26 @@ exeName := RegExReplace(exeName, "\.exe$", "", "")
 Gui, +OwnDialogs +AlwaysOnTop
 Gui, Add, Text,, (Select where to create shortcuts)
 
-; Icon to the right, above OK
+; Icon to the right, above OK button
 Gui, Add, Picture, x250 y10 w32 h32 Icon0 vIconPreview, %exePath%
+Gui, Font, s9 Bold
+Gui, Add, Text, x250 y45 Center, %exeName%
+Gui, Font  ; Reset to default
 
 ; Add checkboxes with Desktop and Start Menu checked by default
+; Left-aligned checkboxes and fields
 Gui, Add, Checkbox, vCreateDesktop Checked x20 y60, Create Desktop Shortcut
-Gui, Add, Checkbox, vCreateStartMenu Checked, Create Start Menu Shortcut
-Gui, Add, Checkbox, vCreateTaskbar, Pin to Taskbar
+Gui, Add, Checkbox, vCreateStartMenu Checked x20, Create Start Menu Shortcut
+Gui, Add, Checkbox, vCreateTaskbar x20, Pin to Taskbar
 
 ; Folder and name fields
-Gui, Add, Text,, Start Menu Folder Name (Optional):
-Gui, Add, Edit, vStartMenuFolder w200, Portables  ; Default value is "Portables"
-Gui, Add, Text,, Shortcut Name:
-Gui, Add, Edit, vShortcutName w200, %exeName%
+Gui, Add, Text, x20, Start Menu Folder Name (Optional):
+Gui, Add, Edit, vStartMenuFolder w200 x20, Portables  ; Default value is "Portables"
+Gui, Add, Text, x20, Shortcut Name:
+Gui, Add, Edit, vShortcutName w200 x20, %exeName%
 
+; OK button under the icon
 Gui, Add, Button, x250 y55 w75 h23 Default, OK
-Gui, Show,, Shortcut Options
-Return
-
-ButtonOK:
 Gui, Submit
 
 ; Ensure at least one option is selected
