@@ -6,12 +6,13 @@
 SendMode Input  ; Recommended for new scripts due to its superior speed and reliability
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory
 
-; Check if an argument (EXE file path) is passed
+; Check if an argument (EXE file path) is passed, i.e. if EXE was dragged and dropped
 if 0 < 1 {
     MsgBox, Please drag and drop an executable file onto this script.
     ExitApp
 }
 
+; Get the EXE path and clean it
 exePath = %1%
 exePath := Trim(exePath, """")  ; Remove surrounding quotes
 
@@ -27,16 +28,23 @@ Loop, %exePath%, 1 {
     break
 }
 
+; Get base name for shortcut
 SplitPath, exePath, exeName
 exeName := RegExReplace(exeName, "\.exe$", "", "")
 
-; Show GUI with icon preview
+; GUI with EXE icon preview
 Gui, +OwnDialogs +AlwaysOnTop
 Gui, Add, Text,, (Select where to create shortcuts)
+
+; Show EXE's icon in the GUI body (Picture control)
 Gui, Add, Picture, x20 y50 w32 h32 Icon0 vIconPreview, %exePath%
+
+; Add checkboxes with Desktop and Start Menu checked by default
 Gui, Add, Checkbox, vCreateDesktop Checked x+50 y55, Create Desktop Shortcut
 Gui, Add, Checkbox, vCreateStartMenu Checked, Create Start Menu Shortcut
 Gui, Add, Checkbox, vCreateTaskbar, Pin to Taskbar
+
+; Folder and name fields
 Gui, Add, Text,, Start Menu Folder Name (Optional):
 Gui, Add, Edit, vStartMenuFolder w200, Portables  ; Default value is "Portables"
 Gui, Add, Text,, Shortcut Name:
