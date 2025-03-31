@@ -18,7 +18,7 @@ exePath := Trim(exePath, """")  ; Remove surrounding quotes
 
 ; Validate path
 if !FileExist(exePath) {
-    MsgBox, Invalid file path! (`%exePath%`) Please provide a valid executable.
+    MsgBox, Invalid file path! (" . exePath . ")`nPlease provide a valid executable.
     ExitApp
 }
 
@@ -49,6 +49,7 @@ Gui, Add, Text,, Start Menu Folder Name (Optional):
 Gui, Add, Edit, vStartMenuFolder w200, Portables  ; Default value is "Portables"
 Gui, Add, Text,, Shortcut Name:
 Gui, Add, Edit, vShortcutName w200, %exeName%
+
 Gui, Add, Button, x+10 w75 h23 Default, OK
 Gui, Show,, Shortcut Options
 Return
