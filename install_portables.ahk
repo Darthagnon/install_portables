@@ -8,7 +8,7 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory
 
 ; Check if an argument (EXE file path) is passed
 if 0 < 1 {
-    MsgBox Please drag and drop an executable file onto this script.
+    MsgBox, Please drag and drop an executable file onto this script.
     ExitApp
 }
 
@@ -17,7 +17,7 @@ exePath := Trim(exePath, """")  ; Remove surrounding quotes
 
 ; Validate path
 if !FileExist(exePath) {
-    MsgBox Invalid file path! (`%exePath%`) Please provide a valid executable.
+    MsgBox, Invalid file path! (`%exePath%`) Please provide a valid executable.
     ExitApp
 }
 
@@ -30,22 +30,10 @@ Loop, %exePath%, 1 {
 SplitPath, exePath, exeName
 exeName := RegExReplace(exeName, "\.exe$", "", "")
 
-; Extract icon from EXE
-iconIndex := 0
-iconHandle := DllCall("Shell32\ExtractIcon", "UInt", 0, "Str", exePath, "Int", iconIndex, "Ptr")
-if (iconHandle <= 1) {
-    MsgBox Failed to extract icon from the EXE.
-    ExitApp
-}
-
-; Create GUI
+; Show GUI with icon preview
 Gui, +OwnDialogs +AlwaysOnTop
 Gui, Add, Text,, (Select where to create shortcuts)
-
-; Add icon preview
-Gui, Add, Picture, x20 y50 w32 h32 Icon%iconIndex% vIconPreview, %exePath%
-
-; Shortcut options
+Gui, Add, Picture, x20 y50 w32 h32 Icon0 vIconPreview, %exePath%
 Gui, Add, Checkbox, vCreateDesktop Checked x+50 y55, Create Desktop Shortcut
 Gui, Add, Checkbox, vCreateStartMenu Checked, Create Start Menu Shortcut
 Gui, Add, Checkbox, vCreateTaskbar, Pin to Taskbar
@@ -54,7 +42,6 @@ Gui, Add, Edit, vStartMenuFolder w200, Portables  ; Default value is "Portables"
 Gui, Add, Text,, Shortcut Name:
 Gui, Add, Edit, vShortcutName w200, %exeName%
 Gui, Add, Button, x+10 w75 h23 Default, OK
-
 Gui, Show,, Shortcut Options
 Return
 
@@ -63,7 +50,7 @@ Gui, Submit
 
 ; Ensure at least one option is selected
 if !CreateDesktop and !CreateStartMenu and !CreateTaskbar {
-    MsgBox Please select at least one location for the shortcut.
+    MsgBox, Please select at least one location for the shortcut.
     ExitApp
 }
 
@@ -96,5 +83,5 @@ if CreateStartMenu
 if CreateTaskbar
     CreateShortcut(taskbar "\" ShortcutName ".lnk", exePath)
 
-MsgBox Shortcuts created successfully.
+MsgBox, Shortcuts created successfully.
 ExitApp
