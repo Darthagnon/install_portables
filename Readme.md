@@ -17,20 +17,22 @@ This little program does the job for you. It "installs" portables to your choice
 You will now be able to launch the portable program more conveniently from shortcuts on the Desktop, Start Menu, or taskbar.
 
 ## Build
-Built with ChatGPT4o (March 2025), AutoHotkey v1.1.33.02 and NSIS v2.51. Contains icon 271 from shell32.dll (Windows 7).
+Built with ChatGPT4o (March 2025), AutoHotkey v1.1.33.02 x86, UPX 3.96w and NSIS v2.51. Contains icon 271 from shell32.dll (Windows 7).
 
 Works with Windows 7, 8, 8.1, 10, 11. Untested with WinXP, Win2000, WinMe.
 
+Note that UPX may result in antivirus false-positives; it will take a tiny bit less HDD space and a tiny bit more RAM. It doesn't need to be `amd64`, so it can work on more machines.
+
 ## TODO
-- proper Git version control from initial drafts to final
-- Display program icon in popup window
-- Test BAT
+- ~~proper Git version control from initial drafts to final~~
+- ~~Display program icon in popup window~~
+- ~~Test BAT~~
 - Test NSIS installer
-- Uninstaller?
-- Symlink to PATH
+- Uninstaller for "installed" portables?
+- ~~Symlink to PATH?~~ Beyond scope, tested and it kinda works with *.lnk 
 - Add HTML/MD Readme and/or About info
 - Ensure script never stays running in the background
-- Add links to alternatives, e.g. ISMONISM
+- Add links to alternatives, e.g. [ISMONISM](https://github.com/Winkie1000/ISMONISM) ([DonationCoder NANY 2020](https://www.donationcoder.com/forum/index.php?topic=49299.0))
 - Add suggested permanent storage for portables in Program
 - File > Open Start Menu folder, Open Taskbar Pinned folder, Open Desktop folder?
 - Add build script
