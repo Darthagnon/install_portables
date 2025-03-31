@@ -29,7 +29,7 @@ Name "${PRODUCT_NAME}"
 ; Customizing Directory Page 2
 !define MUI_PAGE_HEADER_TEXT "Select Installation Folder"
 !define MUI_PAGE_HEADER_SUBTEXT "Choose the folder in which to install ${PRODUCT_NAME}."
-!define MUI_DIRECTORYPAGE_TEXT_TOP "Choose the folder in which to install ${PRODUCT_NAME}."
+!define MUI_DIRECTORYPAGE_TEXT_TOP "Once installed, right-click on any portable .exe. A new context menu entry $\"Install Portable program$\" will allow you to create Desktop, Start Menu and Pinned Taskbar shortcuts. No other other changes to the portable program are made; config files are still stored alongside the .exe. It is recommended to store portable programs in permanent standard location, e.g. $\"C:\Portables\$\", so that the shortcuts you create keep working. To $\"uninstall$\" a portable program, simply delete the shortcuts and .exe manually."
 !define MUI_DIRECTORYPAGE_TEXT_DESTINATION "Setup will install ${PRODUCT_NAME} in the following folder."
 !define MUI_DIRECTORYPAGE_TITLE "Select Installation Folder"
 !define MUI_DIRECTORYPAGE_BUTTON "Browse..."
@@ -53,6 +53,7 @@ Name "${PRODUCT_NAME}"
 ; Installer header and configuration
 Outfile "install_portables_v1.33_x86.exe"
 InstallDir "$PROGRAMFILES\install_portables"
+InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" "InstallLocation"
 SetCompressor /SOLID lzma
 RequestExecutionLevel admin
 XPStyle on
@@ -71,6 +72,10 @@ XPStyle on
 
 ; Define sections
 Section "Main Section" SEC01
+
+    ; Uninstall and replace previous installation
+    IfFileExists "$INSTDIR\uninstall.exe" 0 +2
+    ExecWait '"$INSTDIR\uninstall.exe" /S'
 
     ; Set the installation directory
     SetOutPath "$INSTDIR"
@@ -96,6 +101,9 @@ Section "Main Section" SEC01
 
     ; Write the uninstaller executable to the install directory
     WriteUninstaller "$INSTDIR\uninstall.exe"
+    
+    ; Write install directory to registry for future updates
+    WriteRegStr HKLM "${PRODUCT_DIR_REGKEY}" "InstallLocation" "$INSTDIR"
 
     ; Display an installation message
     MessageBox MB_OK "${PRODUCT_NAME} installed successfully!"
