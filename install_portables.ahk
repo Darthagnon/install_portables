@@ -36,11 +36,11 @@ exeName := RegExReplace(exeName, "\.exe$", "", "")
 Gui, +OwnDialogs +AlwaysOnTop
 Gui, Add, Text,, (Select where to create shortcuts)
 
-; Show EXE's icon in the GUI body (Picture control)
-Gui, Add, Picture, x20 y50 w32 h32 Icon0 vIconPreview, %exePath%
+; Icon to the right, above OK
+Gui, Add, Picture, x250 y10 w32 h32 Icon0 vIconPreview, %exePath%
 
 ; Add checkboxes with Desktop and Start Menu checked by default
-Gui, Add, Checkbox, vCreateDesktop Checked x+50 y55, Create Desktop Shortcut
+Gui, Add, Checkbox, vCreateDesktop Checked x20 y60, Create Desktop Shortcut
 Gui, Add, Checkbox, vCreateStartMenu Checked, Create Start Menu Shortcut
 Gui, Add, Checkbox, vCreateTaskbar, Pin to Taskbar
 
@@ -50,7 +50,7 @@ Gui, Add, Edit, vStartMenuFolder w200, Portables  ; Default value is "Portables"
 Gui, Add, Text,, Shortcut Name:
 Gui, Add, Edit, vShortcutName w200, %exeName%
 
-Gui, Add, Button, x+10 w75 h23 Default, OK
+Gui, Add, Button, x250 y55 w75 h23 Default, OK
 Gui, Show,, Shortcut Options
 Return
 
