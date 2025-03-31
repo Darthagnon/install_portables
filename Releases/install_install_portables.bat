@@ -5,7 +5,7 @@ setlocal
 set "currentDir=%~dp0"
 
 :: Set the path for the AHK script (replace backslashes with double backslashes for the registry key)
-set "ahkScriptPath=%currentDir%CreateShortcutsWithTaskbarPinning.ahk"
+set "ahkScriptPath=%currentDir%install_portables.exe"
 set "ahkScriptPath=%ahkScriptPath:\=\\%"
 
 :: Create a temporary .reg file
